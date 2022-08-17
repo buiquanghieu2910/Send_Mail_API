@@ -177,6 +177,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <!-- <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Upload</button> -->
                     </div>
                 </div>
             </div>
@@ -222,18 +223,18 @@
                 })
             }
 
-            $scope.loadFolder = function(){
+            $scope.loadFolder = function () {
                 $http.get(`http://buiquanghieu.xyz/TestSendMail/get-all-folder`)
-                .then(resp => {
-                    $scope.folders = resp.data;
-                    $scope.folderValue = resp.data[0];
-                    $scope.folderUpload = resp.data[0];
-                    $scope.changeFolder();
-                    console.log(resp.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
+                    .then(resp => {
+                        $scope.folders = resp.data;
+                        $scope.folderValue = resp.data[0];
+                        $scope.folderUpload = resp.data[0];
+                        $scope.changeFolder();
+                        console.log(resp.data);
+                    })
+                    .catch(error => {
+                        console.log(error);
+                    });
             }
 
             $scope.loadFolder();
@@ -310,16 +311,16 @@
 
                 if (folderName) {
                     // Swal.fire(`Entered email: ${folderName}`)
-                    var folder= await{
+                    var folder = await {
                         folderName: folderName
                     }
-                    await $http.post(`http://buiquanghieu.xyz/TestSendMail/create-folder`,folder)
-                    .then(resp => {
-                        $scope.loadFolder();
-                    })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                    await $http.post(`http://buiquanghieu.xyz/TestSendMail/create-folder`, folder)
+                        .then(resp => {
+                            $scope.loadFolder();
+                        })
+                        .catch(error => {
+                            console.log(error);
+                        });
                 }
             }
 
