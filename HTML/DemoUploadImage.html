@@ -174,6 +174,12 @@
                             <input type="file" class="form-control" id="image"
                                 onchange="angular.element(this).scope().imageChanged(this.files)">
                         </div>
+
+                        <div class="mb-3">
+                            <label for="image" class="form-label">List file</label>
+                            <input type="file" class="form-control" id="image-lst" multiple
+                                onchange="angular.element(this).scope().imageLstChanged(this.files)">
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -217,6 +223,32 @@
                     $('#modalUpload').modal('hide');
                     toastMessage('Thêm mới thành công !', '', 'success');
                     $scope.changeFolder();
+                }).catch(error => {
+                    toastMessage('Thêm mới thất bại !', '', 'error');
+                    console.log(error);
+                })
+            }
+
+
+            $scope.imageLstChanged = async function (multipleFiles) {
+                console.log(multipleFiles.length)
+                var fd = new FormData();
+                console.log(fd);
+                for (let index = 0; index < multipleFiles.length; index++) {
+                    fd.append('multipleFiles', multipleFiles[index]);
+                }
+                var data = await new FormData();
+                // await console.log(files[0]);
+                // for (let index = 0; index < files.length; index++) {
+                //     await data.append('file', files[index]);
+                // }
+
+                await $http.post(`http://localhost:8080/TestSendMail/upload/multiple/files`, fd, {
+                    transformRequest: angular.identity,
+                    headers: { 'Content-Type': undefined }
+                }).then(resp => {
+                    console.log(resp.data)
+                    // toastMessage('Thêm mới thành công !', '', 'success');
                 }).catch(error => {
                     toastMessage('Thêm mới thất bại !', '', 'error');
                     console.log(error);
