@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.hieubq.Beans.UploadFolder;
+import com.hieubq.Service.CachingService;
 import com.hieubq.Service.UploadService;
 
 @CrossOrigin("*")
@@ -35,6 +36,9 @@ public class UploadImageRestController {
 	private static final Logger logger = Logger.getLogger(UploadImageRestController.class.getName());
 	@Autowired
 	UploadService uploadService;
+	
+	@Autowired
+    CachingService cachingService;
 
 	@PostMapping("/rest/upload/images/{folder}")
 	public JsonNode upload(@PathVariable("file") MultipartFile file, @PathVariable("folder") String folder) {
@@ -74,33 +78,50 @@ public class UploadImageRestController {
 	
 	@PostMapping("/upload/multiple/files")
 	public ResponseEntity<JsonNode> uploadData(@RequestParam("multipleFiles") MultipartFile[] files) throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		ObjectNode node = mapper.createObjectNode();
-		if (files == null || files.length == 0) {
-			throw new RuntimeException("You must select at least one file for uploading");
+		ObjectMapper mapper;
+		ObjectNode node = null;
+		
+		try {
+//			ObjectMapper mapper;
+//			ObjectNode node;
+			if (files == null || files.length == 0) {
+				throw new RuntimeException("You must select at least one file for uploading");
+			}
+
+			StringBuilder sb = new StringBuilder(files.length);
+
+			for (int i = 0; i < files.length; i++) {
+//				InputStream inputStream = files[i].getInputStream();
+//				String originalName = files[i].getOriginalFilename();
+//				String name = files[i].getName();
+//				String contentType = files[i].getContentType();
+//				long size = files[i].getSize();
+	//
+//				sb.append("File Name: " + originalName + "\n");
+	//
+//				logger.info("InputStream: " + inputStream);
+//				logger.info("OriginalName: " + originalName);
+//				logger.info("Name: " + name);
+//				logger.info("ContentType: " + contentType);
+//				logger.info("Size: " + size);
+				
+				File savedFile = uploadService.save(files[i], "product");
+				mapper = new ObjectMapper();
+				node = mapper.createObjectNode();
+				node.put("name", savedFile.getName());
+				node.put("size", savedFile.length());
+//				return ResponseEntity.ok(node);
+				
+				cachingService.evictAllCaches();
+			}
+		} catch (Exception e) {
+//			return ResponseEntity.ok().build();
 		}
-
-		StringBuilder sb = new StringBuilder(files.length);
-
-		for (int i = 0; i < files.length; i++) {
-			InputStream inputStream = files[i].getInputStream();
-			String originalName = files[i].getOriginalFilename();
-			String name = files[i].getName();
-			String contentType = files[i].getContentType();
-			long size = files[i].getSize();
-
-			sb.append("File Name: " + originalName + "\n");
-
-			logger.info("InputStream: " + inputStream);
-			logger.info("OriginalName: " + originalName);
-			logger.info("Name: " + name);
-			logger.info("ContentType: " + contentType);
-			logger.info("Size: " + size);
-		}
+		return ResponseEntity.ok(node);
 
 		// Do processing with uploaded file data in Service layer
 //		return new ResponseEntity<String>(sb.toString(), HttpStatus.OK);
-		return ResponseEntity.ok(node);
+//		return ResponseEntity.ok(node);
 	}
 
 	@GetMapping("/get-all-folder")
@@ -141,6 +162,7 @@ public class UploadImageRestController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		cachingService.evictAllCaches();
 		return lstFile;
 	}
 

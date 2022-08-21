@@ -47,7 +47,7 @@
                     <div class="row">
                         <div ng-if="dir" class="col-md-2 mb-2 rounded border" ng-repeat="name in fileName">
                             <img ng-dblclick="removeImage(name)" class="img-fluid"
-                                src="http://buiquanghieu.xyz/TestSendMail/assets/images/{{dir}}/{{name}}" alt="">
+                                src="http://localhost:8080/TestSendMail/assets/images/{{dir}}/{{name}}" alt="">
 
                         </div>
                     </div>
@@ -216,7 +216,7 @@
                 var data = new FormData();
                 data.append('file', files[0]);
                 $scope.isLoading = true;
-                $http.post(`http://buiquanghieu.xyz/TestSendMail/rest/upload/images/${$scope.folderUpload}`, data, {
+                $http.post(`http://localhost:8080/TestSendMail/rest/upload/images/${$scope.folderUpload}`, data, {
                     transformRequest: angular.identity,
                     headers: { 'Content-Type': undefined }
                 }).then(resp => {
@@ -247,8 +247,8 @@
                     transformRequest: angular.identity,
                     headers: { 'Content-Type': undefined }
                 }).then(resp => {
-                    console.log(resp.data)
-                    // toastMessage('Thêm mới thành công !', '', 'success');
+                    $('#modalUpload').modal('hide');
+                    toastMessage('Thêm mới thành công !', '', 'success');
                 }).catch(error => {
                     toastMessage('Thêm mới thất bại !', '', 'error');
                     console.log(error);
@@ -256,7 +256,7 @@
             }
 
             $scope.loadFolder = function () {
-                $http.get(`http://buiquanghieu.xyz/TestSendMail/get-all-folder`)
+                $http.get(`http://localhost:8080/TestSendMail/get-all-folder`)
                     .then(resp => {
                         $scope.folders = resp.data;
                         $scope.folderValue = resp.data[0];
@@ -274,7 +274,7 @@
 
             $scope.changeFolder = function () {
                 // console.log($scope.folderValue)
-                $http.get(`http://buiquanghieu.xyz/TestSendMail/get-all-file/${$scope.folderValue}`)
+                $http.get(`http://localhost:8080/TestSendMail/get-all-file/${$scope.folderValue}`)
                     .then(resp => {
                         $scope.dir = angular.copy($scope.folderValue);
                         $scope.fileName = resp.data;
@@ -302,7 +302,7 @@
             };
 
             $scope.apiRemove = function (folder, fileName) {
-                $http.delete(`http://buiquanghieu.xyz/TestSendMail/delete-file/${folder}/${fileName}`)
+                $http.delete(`http://localhost:8080/TestSendMail/delete-file/${folder}/${fileName}`)
                     .then(resp => {
                         Swal.fire(
                             'Deleted!',
@@ -322,7 +322,7 @@
             };
 
             $scope.clickFolder = function (folder) {
-                $http.get(`http://buiquanghieu.xyz/TestSendMail/get-all-file/${folder}`)
+                $http.get(`http://localhost:8080/TestSendMail/get-all-file/${folder}`)
                     .then(resp => {
                         $scope.dir = angular.copy(folder);
                         $scope.fileName = resp.data;
@@ -346,7 +346,7 @@
                     var folder = await {
                         folderName: folderName
                     }
-                    await $http.post(`http://buiquanghieu.xyz/TestSendMail/create-folder`, folder)
+                    await $http.post(`http://localhost:8080/TestSendMail/create-folder`, folder)
                         .then(resp => {
                             $scope.loadFolder();
                         })
