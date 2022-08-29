@@ -35,6 +35,7 @@ public class SendMailRestController {
 			smtpMailSender.sendMail(mail.getTo(), mail.getSubject(), mail.getContent());
 			return ResponseEntity.ok(mail);
 		} catch (Exception e) {
+			e.printStackTrace();
 			return ResponseEntity.ok().build();
 		}
 		
