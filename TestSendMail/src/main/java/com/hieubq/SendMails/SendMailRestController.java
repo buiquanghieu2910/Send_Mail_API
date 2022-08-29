@@ -25,12 +25,13 @@ public class SendMailRestController {
 	@PostMapping("/api/mail/send")
 	public ResponseEntity<SendMail> sendMail(@RequestBody SendMail mail) throws MessagingException {
 		try {
-			String text = "<table width='100%' border='1' align='center'>" + "<tr align='center'>"
-					+ "<td><b>Email <b></td>" + "<td><b>Connect<b></td>" + "</tr>";
-
-			text = text + "<tr align='center'>" + "<td>" + mail.getTo() + "</td>" + "<td>" + "Hello world !" + "</td>"
-					+ "</tr>";
-	        mail.setContent(mail.getContent()+"\n"+ text);
+//			String text = "<table width='100%' border='1' align='center'>" + "<tr align='center'>"
+//					+ "<td><b>Email <b></td>" + "<td><b>Connect<b></td>" + "</tr>";
+//
+//			text = text + "<tr align='center'>" + "<td>" + mail.getTo() + "</td>" + "<td>" + "Hello world !" + "</td>"
+//					+ "</tr>";
+//	        mail.setContent(mail.getContent()+"\n"+ text);
+			mail.setContent(mail.getContent());
 			System.out.println(mail.toString());
 			smtpMailSender.sendMail(mail.getTo(), mail.getSubject(), mail.getContent());
 			return ResponseEntity.ok(mail);
