@@ -23,7 +23,7 @@ public class SendMailRestController {
 	SmtpMailSender smtpMailSender;
 
 	@PostMapping("/api/mail/send")
-	public ResponseEntity<SendMail> sendMail(@RequestBody SendMail mail) throws MessagingException {
+	public SendMail sendMail(@RequestBody SendMail mail) throws MessagingException {
 		try {
 //			String text = "<table width='100%' border='1' align='center'>" + "<tr align='center'>"
 //					+ "<td><b>Email <b></td>" + "<td><b>Connect<b></td>" + "</tr>";
@@ -34,10 +34,11 @@ public class SendMailRestController {
 			mail.setContent(mail.getContent());
 			System.out.println(mail.toString());
 			smtpMailSender.sendMail(mail.getTo(), mail.getSubject(), mail.getContent());
-			return ResponseEntity.ok(mail);
+//			return ResponseEntity.ok(mail);
+			return mail;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return ResponseEntity.ok().build();
+			return null;
 		}
 		
 	}
